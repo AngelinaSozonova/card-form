@@ -38,39 +38,26 @@ import { Card, CardContent } from "../ui/card";
 import { formatDataCreateProduct } from "./utils";
 import { FormData } from "./types";
 import { Textarea } from "../ui/textarea";
-import { toast } from "sonner";
 
-const sendData = async (data: unknown) => {
-    try {
-      const response = await fetch(
-        "https://app.tablecrm.com/api/v1/nomenclature/?token=af1874616430e04cfd4bce30035789907e899fc7c3a1a4bb27254828ff304a77",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+const sendData = (data: unknown) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+  const raw = JSON.stringify(data);
 
-      const result = await response.json();
-      
-      toast.success("Данные сохранены", {
-        description: "Товар успешно добавлен в систему",
-      });
-
-      return result;
-    } catch (error) {
-      toast.error("Ошибка", {
-        description: error instanceof Error ? error.message : "Неизвестная ошибка",
-      });
-    }
-  };
-
+  fetch(
+    "https://app.tablecrm.com/api/v1/nomenclature/?token=af1874616430e04cfd4bce30035789907e899fc7c3a1a4bb27254828ff304a77",
+    {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    },
+  )
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+};
 
 const CardProduct = () => {
   const form = useForm({
@@ -111,8 +98,6 @@ const CardProduct = () => {
     },
   });
 
-  
-
   const onSubmit = (data: FormData) => {
     const newData = formatDataCreateProduct(data);
 
@@ -121,7 +106,11 @@ const CardProduct = () => {
 
   return (
     <Form {...form}>
-      <form id="form-card" onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+      <form
+        id="form-card"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col"
+      >
         <Field orientation="horizontal">
           <FormField
             control={form.control}
@@ -130,10 +119,7 @@ const CardProduct = () => {
               <FormItem className="mb-4">
                 <FormLabel>Код</FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    {...field}
-                  />
+                  <Input type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -280,10 +266,7 @@ const CardProduct = () => {
             <FormItem className="mb-4">
               <FormLabel>Краткое описание товара</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  {...field}
-                />
+                <Input type="text" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -297,7 +280,7 @@ const CardProduct = () => {
             <FormItem className="mb-4">
               <FormLabel>Длинное описание товара</FormLabel>
               <FormControl>
-                <Textarea {...field}/>
+                <Textarea {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -480,10 +463,7 @@ const CardProduct = () => {
                     <FormItem className="mb-4">
                       <FormLabel>SEO Загаловок</FormLabel>
                       <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                        />
+                        <Input type="text" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -497,10 +477,7 @@ const CardProduct = () => {
                     <FormItem className="mb-4">
                       <FormLabel>SEO Описание</FormLabel>
                       <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                        />
+                        <Input type="text" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
