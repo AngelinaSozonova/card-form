@@ -71,8 +71,7 @@ export const seoKeywords = [
 export const formSchema = z.object({
   name: z
     .string()
-    .min(5, "Bug title must be at least 5 characters.")
-    .max(32, "Bug title must be at most 32 characters."),
+    .min(5, "Минимум 5 символов"),
   type: z
     .object({
       label: z.string(),

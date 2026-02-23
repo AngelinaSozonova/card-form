@@ -29,5 +29,5 @@ export const formatDataCreateProduct = (data: FormData) => {
     }
   }
 
-  return newData;
+  return [newData];
 };

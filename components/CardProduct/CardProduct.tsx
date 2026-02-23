@@ -37,6 +37,40 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Card, CardContent } from "../ui/card";
 import { formatDataCreateProduct } from "./utils";
 import { FormData } from "./types";
+import { Textarea } from "../ui/textarea";
+import { toast } from "sonner";
+
+const sendData = async (data) => {
+    try {
+      const response = await fetch(
+        "https://app.tablecrm.com/api/v1/nomenclature/?token=af1874616430e04cfd4bce30035789907e899fc7c3a1a4bb27254828ff304a77",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      toast.success("Данные сохранены", {
+        description: "Товар успешно добавлен в систему",
+      });
+
+      return result;
+    } catch (error) {
+      toast.error("Ошибка", {
+        description: error instanceof Error ? error.message : "Неизвестная ошибка",
+      });
+    }
+  };
+
 
 const CardProduct = () => {
   const form = useForm({
@@ -77,31 +111,12 @@ const CardProduct = () => {
     },
   });
 
+  
+
   const onSubmit = (data: FormData) => {
     const newData = formatDataCreateProduct(data);
 
-    fetch(
-      "https://app.tablecrm.com/api/v1/nomenclature/?token=af1874616430e04cfd4bce30035789907e899fc7c3a1a4bb27254828ff304a77",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newData),
-      },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Http error status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((result) => {
-        console.log("Успешно отправлено: ", result);
-      })
-      .catch((error) => {
-        console.error("Ошибка", error);
-      });
+    sendData(newData);
   };
 
   return (
@@ -282,10 +297,7 @@ const CardProduct = () => {
             <FormItem className="mb-4">
               <FormLabel>Длинное описание товара</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  {...field}
-                />
+                <Textarea {...field}/>
               </FormControl>
               <FormMessage />
             </FormItem>
